@@ -1,4 +1,4 @@
-#UPDATED
+## UPDATED
 
 # Asteroid-Assignment-Base
 Initial skeleton for the assignment (semester-2 2016/17)
