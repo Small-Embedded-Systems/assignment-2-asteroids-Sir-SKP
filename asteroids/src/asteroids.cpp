@@ -1,9 +1,3 @@
-/* Asteroids
-    Sample solution for assignment
-    Semester 2 -- Small Embedded Systems
-    Dr Alun Moon
-*/
-
 /* C libraries */
 #include <stdlib.h>
 #include <stdint.h>
@@ -28,22 +22,42 @@ struct ship player;
 
 float Dt = 0.01f;
 
-Ticker model, view, controller;
+bool gameStart = false;
+int shieldState;
+bool shieldReady = false;
+int shipTrajectory;
+
+Ticker model, view, controller, rocks;
+
+void timerHandler();
 
 bool paused = true;
 /* The single user button needs to have the PullUp resistor enabled */
 DigitalIn userbutton(P2_10,PullUp);
+
+/* Restore Lives and Shields - Reset Score - Reset Ship Position */
+void masterReset(void) {
+		lives = 5;
+		shieldState = 3;
+		score = 0;
+		shipOriginX = 230;
+		shipOriginY = 120;
+}
+
 int main()
 {
-
     init_DBuffer();
-    
-
+    intialiseAsteroidHeap();
+	intialiseMissileHeap();
+	
+	/* Attach Files */
     view.attach( draw, 0.025);
     model.attach( physics, Dt);
     controller.attach( controls, 0.1);
+	rocks.attach( spawnAsteroid, 0.1);
     
     lives = 5;
+	shieldState = 3;
     
     /* Pause to start */
     while( userbutton.read() ){ /* remember 1 is not pressed */
@@ -53,18 +67,13 @@ int main()
     paused = false;
     
     while(true) {
-        /* do one of */
-        /* Wait until all lives have been used
-        while(lives>0){
-            // possibly do something game related here
-            wait_ms(200);
-        }
-        */
-        /* Wait until each life is lost
-        while( inPlay ){
-            // possibly do something game related here
-            wait_ms(200);
-        }
-        */
-    }
+				if(lives == 0 && gameStart == true) {
+						view.detach();
+						model.detach();
+						controller.detach();
+						rocks.detach();
+						drawGameOver();
+						wait_ms(200);
+				}
+		}
 }

@@ -9,17 +9,55 @@ typedef struct point vector_t;
 struct ship {
     coordinate_t p;
     vector_t     v;
-};
+}; 
 
 /* initial struts for building linked lists */
-struct rock {
-    coordinate_t p;
-    struct rock *next;
-};
+typedef struct asteroid {
+    float asteroidX;
+		float asteroidY;
+		float asteroidVelocityX;
+		float asteroidVelocityY;
+		int asteroidSize;
+		float asteroidTTL;
+    struct asteroid *next;
+} asteroid_t;
 
-struct missile {
-    coordinate_t p;
+typedef struct missile {
+    float missileX;
+		float missileY;
+		float missileVelocityX;
+		float missileVelocityY;
+		float missileList;
+		float missileTTL;
     struct missile *next;
-};
+} missile_t;
 
+/* FUNCTIONS */
 void physics(void);
+void asteroidFreeNode(asteroid_t *i);
+void missileFreeNode(missile_t *i);
+void intialiseAsteroidHeap(void);
+void intialiseMissileHeap(void);
+void fireMissile(void);
+void spawnAsteroid(void);
+
+/* NODES */
+asteroid_t *allocateNodeAsteroid(void);
+missile_t *allocateNodeMissile(void);
+
+/* EXTERNAL VARIABLES */
+extern double shipSpeed;
+extern float shipOriginX;
+extern float shipOriginY;
+extern float shipPointX;
+extern float shipPointY;
+extern float shipLeftX;
+extern float shipLeftY;
+extern float shipRightX;
+extern float shipRightY;
+extern struct missile *missileActive;
+extern struct asteroid *asteroidActive;
+extern const int asteroidHeapsize;
+extern const int missileHeapsize;
+extern int asteroidSize;
+
