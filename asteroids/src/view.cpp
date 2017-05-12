@@ -174,20 +174,20 @@ void drawShield(void) {
 }
 
 /* DRAW MISSILES ON-SCREEN */
-void drawMissiles(struct missile *list) {
+void drawMissiles(struct missile *missileList) {
 		//Cycle through the linked list and draw all exiting missiles
-		while(list) {
-				graphics->fillCircle(list->missileX, list->missileY, 1, GREEN);
-				list = list->next;
+		while(missileList) {
+				graphics->fillCircle(missileList->missileX, missileList->missileY, 1, GREEN);
+				missileList = missileList->next;
 		}
 }
 
 /* DRAW ASTEROIDS ON-SCREEN */
-void drawAsteroids(struct asteroid *list) {
+void drawAsteroids(struct asteroid *asteroidList) {
 		//Cycle through the linked list and draw all existing asteroids
-		while(list) {
-				graphics->drawCircle(list->asteroidX, list->asteroidY, list->asteroidSize, WHITE);
-				list = list->next;
+		while(asteroidList) {
+				graphics->drawCircle(asteroidList->asteroidX, asteroidList->asteroidY, asteroidList->asteroidSize, WHITE);
+				asteroidList = asteroidList->next;
 		}
 }
 
