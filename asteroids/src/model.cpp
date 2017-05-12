@@ -77,31 +77,31 @@ asteroid_t *allocateNodeAsteroid(void) {
 
 /* SET DEFAULT ORIGINS OF MISSILE AND ASTEROID SPAWNS */
 //Missile Origin spawns from the spear-point of the ship
-void missileOrigin(struct missile *ignited) {
-		int missileSpeed = 250;
-		ignited->missileX = shipOriginX;
-		ignited->missileY = shipOriginY;
-		ignited->missileVelocityX = missileSpeed * (cos(headingTrajectory));
-		ignited->missileVelocityY = missileSpeed * (sin(headingTrajectory));
-		ignited->missileTTL = 200;
+void missileOrigin(struct missile *missileO) {
+		int missileVelocity = 200;
+		missileO->missileX = shipOriginX;
+		missileO->missileY = shipOriginY;
+		missileO->missileVelocityX = missileVelocity * (cos(headingTrajectory));
+		missileO->missileVelocityY = missileVelocity * (sin(headingTrajectory));
+		missileO->missileTTL = 200;
 }
 
 //Asteroid Origin spawns at a random position
-void asteroidOrigin(struct asteroid *ignited) {
+void asteroidOrigin(struct asteroid *asteroidO) {
 		int asteroidSpeed = randrange(30,90);
 		int shipRadiusProtect = 60;		//Set at double the ships radius to prevent asteroid spawn right next to ship
-		ignited->asteroidX = randrange(20,460);
-		ignited->asteroidY = randrange(20,240);
+		asteroidO->asteroidX = randrange(20,460);
+		asteroidO->asteroidY = randrange(20,240);
 		//Prevent asteroid spawning next to Ship
 		//If asteroid origin matches ships current origin pick another random origin for the asteroid
-		if(((ignited->asteroidX) > (shipOriginX - shipRadiusProtect) && (ignited->asteroidX) < (shipOriginX + shipRadiusProtect)) && ((ignited->asteroidY) > (shipOriginY - shipRadiusProtect) && (ignited->asteroidY) < (shipOriginY + shipRadiusProtect))) {
-				ignited->asteroidX = randrange(20,460);
-				ignited->asteroidY = randrange(20,240);
+		if(((asteroidO->asteroidX) > (shipOriginX - shipRadiusProtect) && (asteroidO->asteroidX) < (shipOriginX + shipRadiusProtect)) && ((asteroidO->asteroidY) > (shipOriginY - shipRadiusProtect) && (asteroidO->asteroidY) < (shipOriginY + shipRadiusProtect))) {
+				asteroidO->asteroidX = randrange(20,460);
+				asteroidO->asteroidY = randrange(20,240);
 		}
-				ignited->asteroidSize = randrange(10,30);	//Each asteroid has a speed between 10 and 30
-				ignited->asteroidVelocityX = randrange(-asteroidSpeed,asteroidSpeed);
-				ignited->asteroidVelocityY = randrange(-asteroidSpeed,asteroidSpeed);
-				ignited->asteroidTTL = randrange(900,1100);
+		asteroidO->asteroidSize = randrange(10,30);	//Each asteroid has a speed between 10 and 30
+		asteroidO->asteroidVelocityX = randrange(-asteroidSpeed,asteroidSpeed);
+		asteroidO->asteroidVelocityY = randrange(-asteroidSpeed,asteroidSpeed);
+		asteroidO->asteroidTTL = randrange(900,1100);
 }
 
 /* SCREEN WRAP */
@@ -256,9 +256,9 @@ void missileStatus(struct missile *m) {
 				m->missileTTL -=Dt;
 				
 				if(m->next->missileTTL<=0) {
-						struct missile *destroyed = m->next;
+						struct missile *mDestroyed = m->next;
 						m->next = m->next->next;
-						missileFreeNode(destroyed);
+						missileFreeNode(mDestroyed);
 				}
 		}
 }
@@ -270,9 +270,9 @@ void asteroidStatus (struct asteroid *a) {
 				a->asteroidY += a-> asteroidVelocityY * Dt;
 			
 				if(a->next->asteroidTTL <= 0) {
-						struct asteroid *destroyed = a->next;
+						struct asteroid *aDestroyed = a->next;
 						a->next = a->next->next;
-						asteroidFreeNode(destroyed);
+						asteroidFreeNode(aDestroyed);
 				}
 		}
 }
@@ -304,15 +304,15 @@ void manageShipSpeed(void) {
 
 /* FREE NODES */
 //Free Missile Nodes
-void missileFreeNode(missile_t *i) {
-		i->next = missileFreeNodes;
-		missileFreeNodes = i;
+void missileFreeNode(missile_t *freeMissile) {
+		freeMissile->next = missileFreeNodes;
+		missileFreeNodes = freeMissile;
 }
 
 //Free Asteroid Nodes
-void asteroidFreeNode(asteroid_t *i) {
-		i->next = asteroidFreeNodes;
-		asteroidFreeNodes = i;
+void asteroidFreeNode(asteroid_t *freeAsteroid) {
+		freeAsteroid->next = asteroidFreeNodes;
+		asteroidFreeNodes = freeAsteroid;
 }
 
 /* PHYSICS ENGINE */
